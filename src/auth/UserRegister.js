@@ -17,26 +17,30 @@ const UserRegister = () => {
   const mobileRef = useRef(null);
 
   const storeUser = async () => {
-    if (!name || !mobile || !password || !email) {
-      alert("Filled all mandatory fields");
+    if (mobile.toString().length < 10 || mobile.toString().length > 10) {
+      alert("Enter 10 digit valid mobile number!");
     } else {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("mobile", mobile);
-      formData.append("email", email);
-      formData.append("address", address);
-      formData.append("image", image);
-      formData.append("password", password);
-      const response = await fetch(`${url}/api/users/user-register`, {
-        method: "POST",
-        body: formData,
-      });
-      const result = await response.json();
-      if (result.status === 200) {
-        alert(result.result);
-        navigate("/users");
+      if (!name || !password) {
+        alert("Filled all mandatory fields");
       } else {
-        alert(result.result);
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("mobile", mobile);
+        // formData.append("email", email);
+        // formData.append("address", address);
+        // formData.append("image", image);
+        formData.append("password", password);
+        const response = await fetch(`${url}/api/users/user-register`, {
+          method: "POST",
+          body: formData,
+        });
+        const result = await response.json();
+        if (result.status === 200) {
+          alert(result.result);
+          navigate("/users");
+        } else {
+          alert(result.result);
+        }
       }
     }
   };
@@ -83,7 +87,7 @@ const UserRegister = () => {
                     </div>
                   </div>
                   <div className="row mt-1">
-                    <div className="col-lg-6 col-12 col-md-6">
+                    {/* <div className="col-lg-6 col-12 col-md-6">
                       <label className="form-label">
                         Email {""}
                         <span className="text-danger fw-bold">*</span>
@@ -94,8 +98,8 @@ const UserRegister = () => {
                         placeholder="Enter Email"
                         onChange={(e) => setEmail(e.target.value)}
                       />
-                    </div>
-                    <div className="col-lg-6 col-12 col-md-6">
+                    </div> */}
+                    <div className="col-lg-12 col-12 col-md-12">
                       <label className="form-label">
                         Mobile No.{" "}
                         <span className="text-danger fw-bold">*</span>
@@ -109,7 +113,7 @@ const UserRegister = () => {
                       />
                     </div>
                   </div>
-                  <div className="row mt-1">
+                  {/* <div className="row mt-1">
                     <div className="col-lg-12 col-12 col-md-12">
                       <label className="form-label">Address</label>
                       <input
@@ -119,7 +123,7 @@ const UserRegister = () => {
                         onChange={(e) => setAddress(e.target.value)}
                       />
                     </div>
-                  </div>
+                  </div> */}
                   <div className="row mt-1">
                     <div className="col-lg-6 col-12 col-md-6">
                       <label className="form-label">
@@ -154,7 +158,7 @@ const UserRegister = () => {
                       </p>
                     )}
                   </div>
-                  <div className="row mt-1">
+                  {/* <div className="row mt-1">
                     <div className="col-lg-12 col-12 col-md-12">
                       <label className="form-label">Profile Image</label>
                       <input
@@ -163,7 +167,7 @@ const UserRegister = () => {
                         onChange={(e) => setImage(e.target.files[0])}
                       />
                     </div>
-                  </div>
+                  </div> */}
                   <div className="text-center">
                     <button
                       onClick={() => storeUser()}

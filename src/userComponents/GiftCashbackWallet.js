@@ -200,7 +200,7 @@ const GiftCashbackWallet = () => {
           <div className="card">
             <div className="upper-row">
               <div className="card-item">
-                <span>My Save it</span>
+                <span>My Saving</span>
                 <span>
                   <i className="fa fa-rupee"></i> {getTotal()}
                 </span>

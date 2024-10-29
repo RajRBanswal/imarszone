@@ -56,29 +56,33 @@ const UserReferRegister = () => {
   }, [userId]);
 
   const storeUser = async () => {
-    if (!name || !mobile || !password) {
-      alert("Filled all mandatory fields");
+    if (mobile.toString().length < 10 || mobile.toString().length > 10) {
+      alert("Enter 10 digit valid mobile number!");
     } else {
-      const formData = new FormData();
-      formData.append("referenceId", userData._id);
-      formData.append("referenceName", userData.name);
-      formData.append("referenceMobile", userData.mobile);
-      formData.append("name", name);
-      formData.append("mobile", mobile);
-      formData.append("email", email);
-      formData.append("address", address);
-      formData.append("image", image);
-      formData.append("password", password);
-      const response = await fetch(`${url}/api/users/refer-user-register`, {
-        method: "POST",
-        body: formData,
-      });
-      const result = await response.json();
-      if (result.status === 200) {
-        alert(result.result);
-        navigate("/login");
+      if (!name || !password) {
+        alert("Filled all mandatory fields");
       } else {
-        alert(result.result);
+        const formData = new FormData();
+        formData.append("referenceId", userData._id);
+        formData.append("referenceName", userData.name);
+        formData.append("referenceMobile", userData.mobile);
+        formData.append("name", name);
+        formData.append("mobile", mobile);
+        // formData.append("email", email);
+        // formData.append("address", address);
+        // formData.append("image", image);
+        formData.append("password", password);
+        const response = await fetch(`${url}/api/users/refer-user-register`, {
+          method: "POST",
+          body: formData,
+        });
+        const result = await response.json();
+        if (result.status === 200) {
+          alert(result.result);
+          navigate("/login");
+        } else {
+          alert(result.result);
+        }
       }
     }
   };
@@ -103,8 +107,17 @@ const UserReferRegister = () => {
                   </h3>
                 </div>
                 <div className="row">
-                  <div className="col-lg-12 col-12 col-md-12">
+                  <div className="col-lg-6 col-12 col-md-6">
                     <label className="form-label">Sponser ID</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={userData._id}
+                      readOnly
+                    />
+                  </div>
+                  <div className="col-lg-6 col-12 col-md-6">
+                    <label className="form-label">Sponser Name</label>
                     <input
                       type="text"
                       className="form-control"
@@ -127,7 +140,7 @@ const UserReferRegister = () => {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-lg-6 col-12 col-md-6">
+                  {/* <div className="col-lg-6 col-12 col-md-6">
                     <label className="form-label">Email</label>
                     <input
                       type="email"
@@ -135,8 +148,8 @@ const UserReferRegister = () => {
                       placeholder="Enter Email"
                       onChange={(e) => setEmail(e.target.value)}
                     />
-                  </div>
-                  <div className="col-lg-6 col-12 col-md-6">
+                  </div> */}
+                  <div className="col-lg-12 col-12 col-md-12">
                     <label className="form-label">
                       Mobile No. <span className="text-danger fw-bold">*</span>
                     </label>
@@ -148,7 +161,7 @@ const UserReferRegister = () => {
                     />
                   </div>
                 </div>
-                <div className="row">
+                {/* <div className="row">
                   <div className="col-lg-12 col-12 col-md-12">
                     <label className="form-label">Address</label>
                     <input
@@ -158,7 +171,7 @@ const UserReferRegister = () => {
                       onChange={(e) => setAddress(e.target.value)}
                     />
                   </div>
-                </div>
+                </div> */}
                 <div className="row">
                   <div className="col-lg-6 col-12 col-md-6">
                     <label className="form-label">
@@ -191,7 +204,7 @@ const UserReferRegister = () => {
                     <p className="text-danger fw-bold">Password not matched</p>
                   )}
                 </div>
-                <div className="row">
+                {/* <div className="row">
                   <div className="col-lg-12 col-12 col-md-12">
                     <label className="form-label">Profile Image</label>
                     <input
@@ -200,7 +213,7 @@ const UserReferRegister = () => {
                       onChange={(e) => setImage(e.target.files[0])}
                     />
                   </div>
-                </div>
+                </div> */}
                 <div className="text-center">
                   <button
                     onClick={() => storeUser()}

@@ -161,6 +161,16 @@
   color: #000;
 }
 
+.p-dropdown .p-dropdown-label {
+  width: 100% !important;
+}
+.p-dropdown .p-dropdown-trigger {
+  width: 2rem !important;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
 @media screen and (max-width: 768px) {
   .navbar-collapse {
     padding: 0 10px !important;
@@ -447,7 +457,7 @@
   position: absolute;
   right: -20px;
   bottom: -30px;
-  z-index: 2;
+  z-index: -1;
 }
 
 .iphone .header-summary {
@@ -544,6 +554,17 @@
   width: 95%;
   /* left: 25%; */
   border-top: 1px solid #636363;
+}
+@media screen and (max-width: 768px) {
+  .lower-row::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 170px;
+    width: 100%;
+    /* left: 25%; */
+    border-top: 1px solid #636363;
+  }
 }
 
 .icon-item {
@@ -1436,9 +1457,18 @@
   padding-left: 5px;
   position: relative;
 }
+.binary-tree ul::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 50px;
+  border-top: 1px solid green;
+  bottom: 0;
+  right: 50px;
+}
 
 .binary-tree ul ul {
-  margin-left: 0px;
+  margin: 5px 0px;
 }
 
 .tree-node {
@@ -1448,7 +1478,7 @@
   border-radius: 5px;
   margin: 0 5px;
   width: 160px;
-  height: 120px;
+  height: 150px;
 }
 
 .tree-node img {
@@ -1457,7 +1487,7 @@
   border-radius: 50%;
 }
 .tree-node p {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: #000;
 }
@@ -1465,7 +1495,7 @@
 .tree-node .sponsorId {
   font-size: 10px;
   font-weight: 500;
-  color: #000;
+  color: #0080ff;
 }
 
 .binary-tree li {
@@ -1478,19 +1508,40 @@
   content: "";
   position: absolute;
   border-top: 1px solid #ccc;
-  top: 70px;
+  top: 85px;
   width: 30px;
-  height: 20px;
+  height: 15px;
 }
+
 .nodeElement li::after {
   content: "";
   position: absolute;
   border-top: 1px solid #ccc;
-  top: -5px;
+  top: 0px;
   width: 1px;
-  left: -15px;
-  margin: auto;
-  border-left: 1px solid red;
+  left: 85px;
+  /* margin: auto; */
+  border-left: 1px solid green;
+}
+.tree-node::after {
+  content: "";
+  position: absolute;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid green;
+  margin-bottom: 15px;
+  top: -10px;
+  left: 85px;
+  height: 15px;
+}
+li .tree-node:nth-child(1)::before {
+  content: "";
+  position: absolute;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid green;
+  margin-bottom: 15px;
+  top: 0px;
+  left: 85px;
+  height: 15px;
 }
 
 .binary-tree li::before {
@@ -1501,6 +1552,16 @@
   right: -15px;
 }
 
-.mainDashboard .card {
+/* .mainDashboard .card {
   background: linear-gradient(180deg, #4774fe, #20007b);
+} */
+.p-tag {
+  border-radius: 0 !important;
+}
+
+.marqueeTag {
+  font-weight: bold;
+  font-size: 20px;
+  background-color: #f9c61f;
+  padding: 10px;
 }

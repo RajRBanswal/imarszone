@@ -84,7 +84,7 @@ const Main = () => {
               <Link
                 className={
                   urls === "/admin"
-                    ? "nav-link text-white bg-gradient-primary active"
+                    ? "nav-link text-white active"
                     : "nav-link text-white"
                 }
                 to="/admin"
@@ -99,7 +99,7 @@ const Main = () => {
               <Link
                 className={
                   urls === "/admin/admin-wallet"
-                    ? "nav-link text-white bg-gradient-primary active"
+                    ? "nav-link text-white active"
                     : "nav-link text-white"
                 }
                 to="/admin/admin-wallet"
@@ -115,15 +115,30 @@ const Main = () => {
               <Link
                 className={
                   urls === "/admin/all-users"
-                    ? "nav-link text-white bg-gradient-primary active"
+                    ? "nav-link text-white active"
                     : "nav-link text-white"
                 }
                 to="/admin/all-users"
               >
                 <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                  <i className="material-icons opacity-10">persons</i>
+                  <i className="fa fa-users"></i>
                 </div>
                 <span className="nav-link-text">All Users</span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                className={
+                  urls === "/admin/package-purchase-request"
+                    ? "nav-link text-white active"
+                    : "nav-link text-white"
+                }
+                to="/admin/package-purchase-request"
+              >
+                <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-toggle-on"></i>
+                </div>
+                <span className="nav-link-text ms-1">Activation Request</span>
               </Link>
             </li>
 
@@ -131,7 +146,7 @@ const Main = () => {
               <Link
                 className={
                   urls === "/admin/reward-point-calculator"
-                    ? "nav-link text-white bg-gradient-primary active"
+                    ? "nav-link text-white active"
                     : "nav-link text-white"
                 }
                 to="/admin/reward-point-calculator"
@@ -147,7 +162,7 @@ const Main = () => {
               <Link
                 className={
                   urls === "/admin/all-registered-users-with-reference"
-                    ? "nav-link text-white bg-gradient-primary active"
+                    ? "nav-link text-white active"
                     : "nav-link text-white"
                 }
                 to="/admin/all-registered-users-with-reference"
@@ -155,24 +170,7 @@ const Main = () => {
                 <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="fa fa-list"></i>
                 </div>
-                <span className="nav-link-text ms-1">Users with Reference</span>
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link
-                className={
-                  urls === "/admin/package-purchase-request"
-                    ? "nav-link text-white bg-gradient-primary active"
-                    : "nav-link text-white"
-                }
-                to="/admin/package-purchase-request"
-              >
-                <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                  <i className="fa fa-coins"></i>
-                </div>
-                <span className="nav-link-text ms-1">
-                  Package Purchase Request
-                </span>
+                <span className="nav-link-text ms-1">Genealogy Tree</span>
               </Link>
             </li>
 
@@ -180,7 +178,7 @@ const Main = () => {
               <Link
                 className={
                   urls === "/admin/users-withdraw-request"
-                    ? "nav-link text-white bg-gradient-primary active"
+                    ? "nav-link text-white active"
                     : "nav-link text-white"
                 }
                 to="/admin/users-withdraw-request"
@@ -188,7 +186,7 @@ const Main = () => {
                 <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="fa fa-money"></i>
                 </div>
-                <span className="nav-link-text ms-1">All Withdraw Request</span>
+                <span className="nav-link-text ms-1">Withdraw Request</span>
               </Link>
             </li>
 
@@ -196,7 +194,7 @@ const Main = () => {
               <Link
                 className={
                   urls === "/admin/users-topup-request"
-                    ? "nav-link text-white bg-gradient-primary active"
+                    ? "nav-link text-white active"
                     : "nav-link text-white"
                 }
                 to="/admin/users-topup-request"
@@ -204,9 +202,24 @@ const Main = () => {
                 <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   <i className="material-icons opacity-10">notifications</i>
                 </div>
-                <span className="nav-link-text ms-1">All TopUp Request</span>
+                <span className="nav-link-text ms-1">TopUp Request</span>
               </Link>
             </li>
+            {/* <li className="nav-item">
+              <Link
+                className={
+                  urls === "/admin/reports"
+                    ? "nav-link text-white active"
+                    : "nav-link text-white"
+                }
+                to="/admin/users-topup-request"
+              >
+                <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  <i className="material-icons opacity-10">print</i>
+                </div>
+                <span className="nav-link-text ms-1">Reports</span>
+              </Link>
+            </li> */}
           </ul>
         </div>
       </aside>
@@ -236,8 +249,8 @@ const Main = () => {
                 </Link>
               </li>
               <li className="nav-item  align-items-center justify-content-end">
-                <Link to="/admin/admin-wallet" className=" btn btn-primary">
-                  <i className="fa fa-wallet"></i> {getTotal()}
+                <Link to="/admin/admin-wallet" className=" btn btn-warning">
+                  Admin Wallet : <i className="fa fa-wallet"></i> {getTotal()}
                 </Link>
               </li>
               <li className="nav-item dropdown pe-2 d-flex justify-content-end align-items-center">

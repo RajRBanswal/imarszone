@@ -27,6 +27,14 @@ import RefferalTree from "./userComponents/RefferalTree";
 import PackagePurchaseRequest from "./components/PackagePurchaseRequest";
 import GiftCashbackWallet from "./userComponents/GiftCashbackWallet";
 import ComingSoon from "./userComponents/ComingSoon";
+import AwardIncome from "./userComponents/AwardIncome";
+import DirectsIncomeReports from "./userComponents/DirectsIncomeReports";
+import TotalIncome from "./userComponents/TotalIncome";
+import Reports from "./userComponents/Reports";
+import MyDirects from "./userComponents/MyDirects";
+import ChangePassword from "./userComponents/ChangePassword";
+import MyIndirects from "./userComponents/MyIndirects";
+import PetrolCardWallet from "./userComponents/PetrolCardWallet";
 
 const App = () => {
   return (
@@ -72,11 +80,18 @@ const App = () => {
           <Route path="users-wallet" Component={UserWallet} />
           <Route path="all-refer-to-users" Component={RefferalTree} />
           <Route path="gift-cashback-wallet" Component={GiftCashbackWallet} />
+          <Route path="petrol-card-wallet" Component={PetrolCardWallet} />
           <Route path="awards-and-rewards" Component={ComingSoon} />
-          <Route path="award-income" Component={ComingSoon} />
-          <Route path="directs-refferal-bonus" Component={ComingSoon} />
-          <Route path="level-bonus" Component={ComingSoon} />
-          <Route path="reports" Component={ComingSoon} />
+          <Route path="my-directs" Component={MyDirects} />
+          <Route path="my-indirects" Component={MyIndirects} />
+          <Route path="award-income" Component={AwardIncome} />
+          <Route
+            path="directs-refferal-bonus"
+            Component={DirectsIncomeReports}
+          />
+          <Route path="level-bonus" Component={TotalIncome} />
+          <Route path="reports" Component={Reports} />
+          <Route path="change-password" Component={ChangePassword} />
         </Route>
       </Routes>
     </BrowserRouter>

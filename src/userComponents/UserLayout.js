@@ -8,7 +8,26 @@ const UserLayout = () => {
   const [sidebarOn, setSidebarOn] = useState(true);
   const userName = localStorage.getItem("userName");
   let userId = localStorage.getItem("userId");
+  const [userData, setUserData] = useState([]);
+
+  const getUserProfile = async () => {
+    const response = await fetch(`${url}/api/users/user-profile`, {
+      method: "post",
+      body: JSON.stringify({ userId }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    if (data.status === 200) {
+      setUserData(data.result);
+    } else {
+      setUserData("");
+    }
+  };
+
   useEffect(() => {
+    getUserProfile();
     if (!userId) {
       navigate("/login");
     }
@@ -30,7 +49,7 @@ const UserLayout = () => {
       },
     });
     const data = await response.json();
-   
+
     if (data.status === 200) {
       setWalletData(data.result);
     } else {
@@ -53,8 +72,11 @@ const UserLayout = () => {
     getWalletData();
   }, [userId]);
 
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+  };
   return (
-    <div>
+    <div onContextMenu={handleContextMenu}>
       <UserSidebar sidebarOn={sidebarOn} />
       <main className="main-content border-radius-lg">
         <nav
@@ -81,13 +103,42 @@ const UserLayout = () => {
                   </div>
                 </Link>
               </li>
-              <li className="nav-item  align-items-center justify-content-end">
-                <Link
-                  to="/users/users-wallet"
-                  className="btn btn-primary"
-                >
-                  <i className="fa fa-wallet"></i> {getTotal()}
-                </Link>
+              <li className="nav-item d-lg-flex align-items-center justify-content-end py-0">
+                {userData.kycstatus === "Done" ? (
+                  <p className="mb-0 me-5">
+                    <img
+                      src={"./assets/img/success.png"}
+                      width={50}
+                      className="me-2"
+                    />
+                    <small className="text-white fw-bold">Active</small>
+                  </p>
+                ) : (
+                  <strong className="text-white">
+                    <img
+                      src={"./assets/img/fail.png"}
+                      width={40}
+                      className="me-5"
+                    />
+                    Inactive
+                  </strong>
+                )}
+              </li>
+              <li className="nav-item d-none d-lg-flex align-items-center justify-content-end py-0">
+                {userData.kycstatus === "Done" ? (
+                  <Link to="/users/users-wallet" className="btn btn-warning">
+                    My Wallet : <i className="fa fa-rupee"></i> {getTotal()}
+                  </Link>
+                ) : (
+                  <strong className="text-white">
+                    <img
+                      src={"./assets/img/fail.png"}
+                      width={40}
+                      className="me-5"
+                    />
+                    Please Purchase Package to Earn Money
+                  </strong>
+                )}
               </li>
               <li className="nav-item dropdown pe-2 d-flex justify-content-end align-items-center">
                 <Link
@@ -113,6 +164,17 @@ const UserLayout = () => {
                       <p className="text-xs text-dark mb-0">
                         <i className="fa fa-user me-1"></i>
                         User Profile
+                      </p>
+                    </Link>
+                  </li>
+                  <li className="mb-2">
+                    <Link
+                      className="dropdown-item border-radius-md"
+                      to="/users/change-password"
+                    >
+                      <p className="text-xs text-dark mb-0">
+                        <i className="fa fa-user me-1"></i>
+                        Change Password
                       </p>
                     </Link>
                   </li>

@@ -22,7 +22,8 @@ const UserDashboard = () => {
   const userId = localStorage.getItem("userId");
   const [userData, setUserData] = useState([]);
   const [users, setUsers] = useState([]);
-  const [todaysUsers, setTodaysUsers] = useState([]);
+  const [activeUsers, setActiveUsers] = useState([]);
+  const [inactiveUsers, setInactiveUsers] = useState([]);
   const [referMobile, setReferMobile] = useState("");
   const [referLink, setReferLink] = useState("");
   const [tempLink, setTempLink] = useState("");
@@ -71,28 +72,6 @@ const UserDashboard = () => {
       setUsers(result.result);
     }
   };
-
-  useEffect(() => {
-    getUserProfile();
-    getAllUsers();
-    let todays = [];
-    users &&
-      users.map((item) => {
-        const itemDate = new Date(item.createdAt);
-        const today = new Date();
-
-        // Check if both dates represent the same day
-        if (
-          itemDate.getFullYear() === today.getFullYear() &&
-          itemDate.getMonth() === today.getMonth() &&
-          itemDate.getDate() === today.getDate()
-        ) {
-          todays.push(item);
-        }
-      });
-
-    setTodaysUsers(todays);
-  }, [userId]);
 
   const referAndEarn = (originalString) => {
     const secretKey = "imarszonechisecratekeyaahe"; // Keep this key secure
@@ -155,6 +134,57 @@ const UserDashboard = () => {
     }
   };
 
+  const [walletData, setWalletData] = useState([]);
+  const getWalletData = async () => {
+    const response = await fetch(`${url}/api/users/users-wallet`, {
+      method: "post",
+      body: JSON.stringify({ userId }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+
+    if (data.status === 200) {
+      setWalletData(data.result);
+    } else {
+      setWalletData([]);
+    }
+  };
+  const getTotal = () => {
+    let total = 0;
+    walletData.map((item) => {
+      if (item.type === "Credit") {
+        total += item.amount;
+      } else if (item.type === "Debit") {
+        total -= item.amount;
+      }
+    });
+    return total;
+  };
+
+  useEffect(() => {
+    getUserProfile();
+    getAllUsers();
+    getWalletData();
+  }, [userId]);
+
+  useEffect(() => {
+    let active = [];
+    let inactive = [];
+    users &&
+      users.map((item) => {
+        // Check if both dates represent the same day
+        if (item.kycstatus === "Done") {
+          active.push(item);
+        } else if (item.kycstatus === "Pending") {
+          inactive.push(item);
+        }
+      });
+    setInactiveUsers(inactive);
+    setActiveUsers(active);
+  }, [users]);
+
   const AddPriceDialogFooter = (
     <React.Fragment>
       <Button
@@ -176,68 +206,136 @@ const UserDashboard = () => {
   return (
     <div className="mainDashboard">
       <div className="row mt-1">
-        <div className="col-lg-4 col-sm-6">
-          <div className="card my-3 h-100">
+        <div className="col-lg-12 col-sm-12">
+          <marquee className="marqueeTag">
+            Rewards : Complete 10 Directs within 15 days to get this rewards.
+            You Required 10 Directs Active Ids to Get Prepaid cum ATM (Magic
+            Card) Reward.
+          </marquee>
+        </div>
+      </div>
+      <div className="row mt-1">
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-4">
+          <div className="card my-3 border-2" style={{ background: "#fff" }}>
             <div className="card-header p-3 pt-2">
-              <div className="icon icon-lg icon-shape bg-gradient-primary shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
-                <i className="fa fa-key "></i>
+              <div className="icon icon-lg icon-shape bg-success border-1 shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
+                <i className="fa fa-user"></i>
               </div>
               <div className="text-end pt-1">
-                <h4 className=" mb-0 text-capitalize text-white">Package Status</h4>
+                <h5 className=" mb-2 text-capitalize">User ID Number</h5>
               </div>
-            </div>
-
-            <hr className="dark horizontal my-0" />
-            <div className="card-footer p-3 text-end">
               {userData.packageName === undefined ||
               userData.packageName === "" ? (
-                <h3 className="mb-0 text-white">Not Buy</h3>
+                <p className="fw-bold mb-0 text-red text-end">{userData._id}</p>
+              ) : (
+                <p className="fw-bold mb-0 text-success text-end">
+                  {userData._id}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-4">
+          <div className="card my-3" style={{ backgroundColor: "#f301ff" }}>
+            <div className="card-header p-3 pt-2">
+              <div className="icon icon-lg icon-shape bg-white border-1 shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
+                <i className="">
+                  {userData.kycstatus === "Done" ? (
+                    <img
+                      src={"./assets/img/success.png"}
+                      width={50}
+                      className="m-auto"
+                    />
+                  ) : (
+                    <img
+                      src={"./assets/img/fail.png"}
+                      width={50}
+                      className="m-auto"
+                    />
+                  )}
+                </i>
+              </div>
+              <div className="text-end pt-1">
+                <h5 className=" mb-2 text-capitalize text-white">
+                  Package Status
+                </h5>
+              </div>
+              {userData.packageName === undefined ||
+              userData.packageName === "" ? (
+                <h4 className="mb-0 text-white text-end">Not Buy</h4>
               ) : (
                 <>
-                  <h5 className="mb-0 text-white">Active</h5>
-                  <p className="fw-bold mb-0 text-white">{userData.packageName}</p>
+                  {/* <h5 className="mb-0 text-white text-end">Active</h5> */}
+                  <p className="fw-bold mb-0 text-white text-end">
+                    {userData.packageName}
+                  </p>
                 </>
               )}
             </div>
           </div>
         </div>
-        <div className="col-lg-4 col-sm-6">
-          <div className="card my-3 h-100">
-            <div className="card-header p-3 pt-2">
-              <div className="icon icon-lg icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-xl mt-n4 position-absolute">
-                <i className="material-icons opacity-10">person_add</i>
-              </div>
-              <div className="text-end pt-1">
-                <h4 className="mb-0 text-capitalize text-white">Connected Users</h4>
-              </div>
-            </div>
-
-            <hr className="dark horizontal my-0" />
-            <div className="card-footer p-3 text-end">
-              <h3 className="mb-0 text-white">{users.length}</h3>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-4 col-sm-6">
-          <div className="card my-3 h-100">
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-4">
+          <div className="card my-3 bg-primary">
             <div className="card-header p-3 pt-2">
               <div className="icon icon-lg icon-shape bg-gradient-primary shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
                 <i className="material-icons opacity-10">person_add</i>
               </div>
               <div className="text-end pt-1">
-                <h4 className=" mb-0 text-capitalize text-white">Today's Users</h4>
+                <h5 className=" mb-0 text-white">My Total Income</h5>
               </div>
+              <h4 className="mb-0 text-white text-end">
+                <i className="fa fa-rupee"></i> {getTotal()}
+              </h4>
             </div>
+          </div>
+        </div>
 
-            <hr className="dark horizontal my-0" />
-            <div className="card-footer p-3 text-end">
-              <h3 className="mb-0 text-white">{todaysUsers.length}</h3>
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-4">
+          <div className="card my-3 bg-primary">
+            <div className="card-header p-3 pt-2">
+              <div className="icon icon-lg icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-xl mt-n4 position-absolute">
+                <i className="fa fa-users"></i>
+              </div>
+              <div className="text-end pt-1">
+                <h5 className="mb-2 text-capitalize text-white">
+                  My Total Team
+                </h5>
+              </div>
+              <p className="mb-0 text-white fw-bold text-end">{users.length}</p>
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-4">
+          <div className="card my-3 bg-success">
+            <div className="card-header p-3 pt-2">
+              <div className="icon icon-lg icon-shape bg-gradient-primary shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
+                <i className="material-icons opacity-10">person_add</i>
+              </div>
+              <div className="text-end pt-1">
+                <h5 className=" mb-0 text-white">My Active Team</h5>
+              </div>
+              <h4 className="mb-0 text-white text-end">{activeUsers.length}</h4>
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-4">
+          <div className="card my-3 bg-danger">
+            <div className="card-header p-3 pt-2">
+              <div className="icon icon-lg icon-shape bg-gradient-primary shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
+                <i className="material-icons opacity-10">person_add</i>
+              </div>
+              <div className="text-end pt-1">
+                <h5 className=" mb-0 text-white">My Inactive Team</h5>
+              </div>
+              <h4 className="mb-0 text-white text-end">
+                {inactiveUsers.length}
+              </h4>
             </div>
           </div>
         </div>
       </div>
       {userData.packageName === undefined || userData.packageName === "" ? (
-        <div className="card p-3 mt-4" style={{background:"#ffe9e9"}}>
+        <div className="card p-3 mt-4" style={{ background: "#ffe9e9" }}>
           <div className="row align-items-center justify-content-center">
             <div className="col-lg-4 col-12">
               <div className="card h-100">
@@ -249,13 +347,15 @@ const UserDashboard = () => {
                   />
                 </div>
                 <div className="card-footer text-center h-100">
-                  <h5 className="text-white">Paithani Sarees + Prepaid Card</h5>
+                  <h5 className="text-primary">
+                    Paithani Sarees + Petrol Card
+                  </h5>
                   <h5 className="text-success">
                     <i className="fa fa-rupee"></i> 999
                   </h5>
                   <button
                     className="btn btn-primary"
-                    onClick={() => openNew("Paithani Sarees + Prepaid Card")}
+                    onClick={() => openNew("Paithani Sarees")}
                   >
                     Buy Now
                   </button>
@@ -272,12 +372,12 @@ const UserDashboard = () => {
                   />
                 </div>
                 <div className="card-footer text-center h-100">
-                  <h5 className="text-white">
-                    Petrol Card + <i className="fa fa-rupee text-sm"></i>500
-                    Load + Gift Card{" "}
+                  <h5 className="text-primary">
+                    Petrol Card with <i className="fa fa-rupee text-sm"></i>500
+                    Load <br />+ Gift Card <br />
                     <small>
                       ( <i className="fa fa-rupee text-sm"></i>
-                      50/Referral )
+                      50 * 10 Active Referral = 500 )
                     </small>
                   </h5>
                   <h5 className="text-success">
@@ -299,45 +399,46 @@ const UserDashboard = () => {
           </div>
         </div>
       ) : (
-        <div className="card p-3 mt-5 shadow" style={{background:"#ffe9e9"}}>
-          <div className="row align-items-center">
-            <div className="col-lg-12 col-12">
-              <b className="">Refferal Link :</b>{" "}
-              <a className="refferalLink" target="_blank" href={referLink}>
-                {tempLink}
-              </a>
-            </div>
-            <div className="col-lg-12 col-12">
-              <div className="row">
-                <div className="col-lg-3 col-12">
-                  <h3 className="font-weight-bolder mb-0">Refer and Earn : </h3>
-                </div>
-                <div className="col-lg-6 col-12 d-flex justify-content-between align-items-center">
-                  <FacebookShareButton url={referLink} quote={title}>
-                    <FacebookIcon size={32} round />
-                  </FacebookShareButton>
-                  <WhatsappShareButton url={referLink} title={title}>
-                    <WhatsappIcon size={32} round />
-                  </WhatsappShareButton>
-                  <InstapaperShareButton url={referLink}>
-                    <InstapaperIcon size={32} round />
-                  </InstapaperShareButton>
-                  <TelegramShareButton url={referLink}>
-                    <TelegramIcon size={32} round />
-                  </TelegramShareButton>
-                  <LinkedinShareButton url={referLink}>
-                    <LinkedinIcon size={32} round />
-                  </LinkedinShareButton>
-                  <TwitterShareButton url={referLink} title={title}>
-                    <TwitterIcon size={32} round />
-                  </TwitterShareButton>
-                </div>
+        ""
+      )}
+      <div className="card p-3 mt-5 shadow" style={{ background: "#ffe9e9" }}>
+        <div className="row align-items-center">
+          <div className="col-lg-12 col-12">
+            <b className="">Refferal Link :</b>{" "}
+            <a className="refferalLink" target="_blank" href={referLink}>
+              {tempLink}
+            </a>
+          </div>
+          <div className="col-lg-12 col-12">
+            <div className="row">
+              <div className="col-lg-3 col-12">
+                <h3 className="font-weight-bolder mb-0">Refer and Earn : </h3>
               </div>
-              <hr className="mt-0" />
+              <div className="col-lg-6 col-12 d-flex justify-content-between align-items-center">
+                <FacebookShareButton url={referLink} quote={title}>
+                  <FacebookIcon size={32} round />
+                </FacebookShareButton>
+                <WhatsappShareButton url={referLink} title={title}>
+                  <WhatsappIcon size={32} round />
+                </WhatsappShareButton>
+                <InstapaperShareButton url={referLink}>
+                  <InstapaperIcon size={32} round />
+                </InstapaperShareButton>
+                <TelegramShareButton url={referLink}>
+                  <TelegramIcon size={32} round />
+                </TelegramShareButton>
+                <LinkedinShareButton url={referLink}>
+                  <LinkedinIcon size={32} round />
+                </LinkedinShareButton>
+                <TwitterShareButton url={referLink} title={title}>
+                  <TwitterIcon size={32} round />
+                </TwitterShareButton>
+              </div>
             </div>
+            <hr className="mt-0" />
           </div>
         </div>
-      )}
+      </div>
 
       <Dialog
         visible={addDialog}

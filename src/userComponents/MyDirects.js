@@ -1,8 +1,32 @@
 import React, { useEffect, useState } from "react";
-import Tree from "react-d3-tree";
 import { url } from "../apiHelper/apiHelper";
 
-const MLMTree = ({ data, userId }) => {
+const MyDirects = () => {
+  const userId = localStorage.getItem("userId");
+  const [data, setConnectedUsers] = useState([]);
+
+  const getAllConnectedUsers = async (userId) => {
+    const response = await fetch(`${url}/api/users/all-refer-users`, {
+      method: "POST",
+      body: JSON.stringify({ userId }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    if (result.status === 200) {
+      setConnectedUsers(result.result);
+    } else {
+      setConnectedUsers(result.result);
+    }
+  };
+
+  // console.log(data);
+
+  useEffect(() => {
+    getAllConnectedUsers(userId);
+  }, [userId]);
+
   const createTree = (sponsorId, users) => {
     return users
       .filter((user) => user.sponsorId === sponsorId)
@@ -39,23 +63,19 @@ const MLMTree = ({ data, userId }) => {
           <p className="mb-0">{node.mobile}</p>
           <p className="mb-0 sponsorId">Sp. Id : {node.sponsorId}</p>
         </div>
-        {node.children.length > 0 && (
-          <ul className="d-inline-flex justify-content-between nodeElement p-0">
-            {node.children.map((child) => renderNode(child))}
-          </ul>
-        )}
       </li>
     );
   };
 
   return (
-    <div className="binary-tree">
-      <h5>Sponsor Id : {userId}</h5>
-      <ul className="d-inline-flex justify-content-between">
+    <div className="binary-tree  overflow-x-scroll">
+      <h5>My Directs</h5>
+      <h5>Sponser Id : {userId}</h5>
+      <ul className="d-inline-flex ">
         {tree.map((topNode) => renderNode(topNode))}
       </ul>
     </div>
   );
 };
 
-export default MLMTree;
+export default MyDirects;

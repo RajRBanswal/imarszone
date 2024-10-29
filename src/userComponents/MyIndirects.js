@@ -6,7 +6,7 @@ import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 
-const RefferalTree = () => {
+const MyIndirects = () => {
   const userId = localStorage.getItem("userId");
   const [data, setConnectedUsers] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -18,13 +18,17 @@ const RefferalTree = () => {
   const getAllConnectedUsers = async () => {
     const response = await fetch(`${url}/api/users/all-refer-users`, {
       method: "POST",
-      body: JSON.stringify({ userId }),
+      body: JSON.stringify({ userId: userId }),
       headers: {
         "Content-Type": "application/json",
       },
     });
     const result = await response.json();
-    setConnectedUsers(result.status === 200 ? result.result : []);
+    if (result.status === 200) {
+      setConnectedUsers(result.result);
+    } else {
+      setConnectedUsers(result.result);
+    }
   };
 
   useEffect(() => {
@@ -41,6 +45,18 @@ const RefferalTree = () => {
       }));
   };
 
+  // Fetch the top-level users with no sponsor
+  const topLevelUsers = data.filter((user) => user.sponsorId !== userId);
+
+  useEffect(() => {
+    // Create the MLM tree based on the sponsorId
+    const generatedTree = topLevelUsers.map((user) => ({
+      ...user,
+      children: createTree(user._id, data),
+    }));
+    setTree(generatedTree);
+  }, [data]);
+
   // Generate the full tree initially or based on the selected user
   useEffect(() => {
     if (selectedUser) {
@@ -53,7 +69,11 @@ const RefferalTree = () => {
       setTree(generatedTree);
       setFilteredTree(generatedTree);
     } else {
-      const generatedTree = createTree(userId, data);
+      // Create the MLM tree based on the sponsorId
+      const generatedTree = topLevelUsers.map((user) => ({
+        ...user,
+        children: createTree(user._id, data),
+      }));
       setTree(generatedTree);
       setFilteredTree(generatedTree);
     }
@@ -105,7 +125,7 @@ const RefferalTree = () => {
     <div className="binary-tree overflow-scroll">
       <div className="row">
         <div className="col-lg-8">
-          <h4>Sponser ID : {userId}</h4>
+          <h4>Sponser ID : {localStorage.getItem("userId")}</h4>
         </div>
         <div className="col-lg-4">
           <Dropdown
@@ -126,5 +146,4 @@ const RefferalTree = () => {
     </div>
   );
 };
-
-export default RefferalTree;
+export default MyIndirects;

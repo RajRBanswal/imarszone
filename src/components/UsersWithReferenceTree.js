@@ -62,10 +62,10 @@ const UsersWithReferenceTree = () => {
 
   const statusBodyTemplate = (rowData) => {
     let abc = (
-      <>
+      <div className="rounded-0">
         <p>Card Number</p>
         <p>{rowData.cardNumber}</p>
-      </>
+      </div>
     );
     return <Tag value={abc} severity={getSeverity(rowData)}></Tag>;
   };
@@ -136,7 +136,7 @@ const UsersWithReferenceTree = () => {
   };
 
   console.log(connectedUsers);
-  
+
   const [nodes, setNodes] = useState([]);
 
   // Helper function to build tree nodes recursively

@@ -110,21 +110,60 @@ const UserSidebar = ({ sidebarOn }) => {
             </Link>
           </li>
 
-          <li className="nav-item">
-            <Link
-              className={
-                urls === "/users/users-wallet"
-                  ? "nav-link text-white active"
-                  : "nav-link text-white"
-              }
-              to="/users/users-wallet"
+          <li className="nav-item dropdown">
+            <a
+              className="nav-link text-white dropdown-toggle"
+              href="#"
+              id="teamsDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
             >
               <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
                 <i className="fa fa-wallet"></i>
               </div>
-              <span className="nav-link-text ms-1">Wallet</span>
-            </Link>
+              <span className="nav-link-text ms-1">Wallets</span>
+            </a>
+            <ul className="dropdown-menu" aria-labelledby="teamsDropdown">
+              <li>
+                <Link
+                  className={
+                    urls === "/users/users-wallet"
+                      ? "dropdown-item ms-1 nav-link text-white active"
+                      : "dropdown-item ms-1 nav-link text-white"
+                  }
+                  to="/users/users-wallet"
+                >
+                  <i className="fa fa-wallet ms-1"></i>Wallet
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className={
+                    urls === "/users/gift-cashback-wallet"
+                      ? "dropdown-item ms-1 nav-link text-white active"
+                      : "dropdown-item ms-1 nav-link text-white"
+                  }
+                  to="/users/gift-cashback-wallet"
+                >
+                  <i className="fa fa-wallet ms-1"></i>Cashback Wallet
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className={
+                    urls === "/users/petrol-card-wallet"
+                      ? "dropdown-item ms-1 nav-link text-white active"
+                      : "dropdown-item ms-1 nav-link text-white"
+                  }
+                  to="/users/petrol-card-wallet"
+                >
+                  <i className="fa fa-wallet mr-1"></i>Petrol Card Wallet
+                </Link>
+              </li>
+            </ul>
           </li>
+
           <li className="nav-item dropdown">
             <a
               className="nav-link text-white dropdown-toggle"
@@ -149,68 +188,34 @@ const UserSidebar = ({ sidebarOn }) => {
                   }
                   to="/users/all-refer-to-users"
                 >
-                  <i className="fa fa-list mr-2"></i> Genology Tree
+                  <i className="fa fa-list mr-1"></i> Genealogy Tree
                 </Link>
               </li>
               <li>
-                <Link className="dropdown-item" to="/users/all-refer-to-users">
-                  <i className="fa fa-users mr-2"></i> My Directs
+                <Link
+                  className={
+                    urls === "/users/my-directs"
+                      ? "dropdown-item ms-1 nav-link text-white active"
+                      : "dropdown-item ms-1 nav-link text-white"
+                  }
+                  to="/users/my-directs"
+                >
+                  <i className="fa fa-users mr-1"></i> My Directs
                 </Link>
               </li>
               <li>
-                <Link className="dropdown-item" to="/users/all-refer-to-users">
-                  <i className="fa fa-users mr-2"></i> Left Directs
+                <Link
+                  className={
+                    urls === "/users/my-indirects"
+                      ? "dropdown-item ms-1 nav-link text-white active"
+                      : "dropdown-item ms-1 nav-link text-white"
+                  }
+                  to="/users/my-indirects"
+                >
+                  <i className="fa fa-users mr-1"></i> My Indirects
                 </Link>
               </li>
             </ul>
-          </li>
-
-          {/* <li className="nav-item">
-            <Link
-              className={
-                urls === "/users/all-refer-to-users"
-                  ? "nav-link text-white active"
-                  : "nav-link text-white"
-              }
-              to="/users/all-refer-to-users"
-            >
-              <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                <i className="material-icons opacity-10">send</i>
-              </div>
-              <span className="nav-link-text ms-1">Teams</span>
-            </Link>
-          </li> */}
-
-          <li className="nav-item">
-            <Link
-              className={
-                urls === "/users/gift-cashback-wallet"
-                  ? "nav-link text-white active"
-                  : "nav-link text-white"
-              }
-              to="/users/gift-cashback-wallet"
-            >
-              <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                <i className="fa fa-wallet"></i>
-              </div>
-              <span className="nav-link-text ms-1">Gift Cashback Wallet</span>
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link
-              className={
-                urls === "/users/awards-and-rewards"
-                  ? "nav-link text-white active"
-                  : "nav-link text-white"
-              }
-              to="/users/awards-and-rewards"
-            >
-              <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                <i className="fa fa-wallet"></i>
-              </div>
-              <span className="nav-link-text ms-1">Award & Reward</span>
-            </Link>
           </li>
 
           <li className="nav-item dropdown">
@@ -223,7 +228,7 @@ const UserSidebar = ({ sidebarOn }) => {
               aria-expanded="false"
             >
               <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                <i className="material-icons opacity-10">send</i>
+                <i className="material-icons opacity-10">print</i>
               </div>
               <span className="nav-link-text ms-1">Income Reports</span>
             </a>
@@ -237,7 +242,7 @@ const UserSidebar = ({ sidebarOn }) => {
                   }
                   to="/users/award-income"
                 >
-                  <i className="fa fa-list mr-2"></i> Award Income
+                  <i className="fa fa-list mr-1"></i> Award Income
                 </Link>
               </li>
               <li>
@@ -249,7 +254,7 @@ const UserSidebar = ({ sidebarOn }) => {
                   }
                   to="/users/directs-refferal-bonus"
                 >
-                  <i className="fa fa-users mr-2"></i> Directs Refferal Bonus
+                  <i className="fa fa-users mr-1"></i> Directs Refferal Bonus
                 </Link>
               </li>
               <li>
@@ -261,7 +266,7 @@ const UserSidebar = ({ sidebarOn }) => {
                   }
                   to="/users/level-bonus"
                 >
-                  <i className="fa fa-users mr-2"></i> Level Income
+                  <i className="fa fa-users mr-1"></i> Level Income
                 </Link>
               </li>
             </ul>
@@ -277,7 +282,7 @@ const UserSidebar = ({ sidebarOn }) => {
               to="/users/reports"
             >
               <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                <i className="fa fa-wallet"></i>
+                <i className="fa fa-print"></i>
               </div>
               <span className="nav-link-text ms-1">Reports</span>
             </Link>

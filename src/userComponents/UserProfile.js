@@ -25,12 +25,15 @@ const UserProfile = () => {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [image, setImage] = useState("");
-  const [PAN, setPAN] = useState("");
-  const [PANName, setPANName] = useState("");
   const [refresh, setRefresh] = useState(false);
-  const [referMobile, setReferMobile] = useState("");
   const [referLink, setReferLink] = useState("");
   const [tempLink, setTempLink] = useState("");
+  const [PANs, setPAN] = useState("");
+  const [bankName, setbankName] = useState("");
+  const [branchName, setbranchName] = useState("");
+  const [accNo, setaccNo] = useState("");
+  const [ifscCode, setifscCode] = useState("");
+  const [accHolderName, setaccHolderName] = useState("");
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const getUserProfile = async () => {
@@ -79,29 +82,40 @@ const UserProfile = () => {
     }
   };
 
-  const [KYCStatus, setKYCStatus] = useState("Pending");
-  const [panVerifyStatus, setPANVerifyStatus] = useState(false);
-
-  const panVerify = async () => {
-    const res = await fetch(`${url}/api/users/user-pan-verification`, {
-      method: "post",
-      body: JSON.stringify({
-        name: PANName,
-        pan: PAN,
-        userId: userId,
-      }),
-      headers: {
-        "Content-Type": "applicaton/json",
-      },
-    });
-    const result = await res.json();
-    if (result.status === 200) {
-      setRefresh(true);
-      setKYCStatus("Done");
-      setPANVerifyStatus(true);
-      console.log(result.data);
+  const updateBankDetails = async () => {
+    if (
+      !PANs ||
+      !bankName ||
+      !branchName ||
+      !accNo ||
+      !ifscCode ||
+      !accHolderName
+    ) {
+      alert("Fill All fields");
     } else {
-      alert("Something went wrong");
+      const res = await fetch(`${url}/api/users/update-bank-details`, {
+        method: "post",
+        body: JSON.stringify({
+          PANs: PANs,
+          bankName: bankName,
+          branchName: branchName,
+          accNo: accNo,
+          ifscCode: ifscCode,
+          accHolderName: accHolderName,
+          userId: userId,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await res.json();
+
+      if (result.status === 201) {
+        setRefresh(true);
+        alert(result.result);
+      } else {
+        alert("Something went wrong");
+      }
     }
   };
 
@@ -129,6 +143,13 @@ const UserProfile = () => {
 
   useEffect(() => {
     referAndEarn(userId);
+
+    setPAN(userData.pan);
+    setbankName(userData.bankName);
+    setbranchName(userData.branchName);
+    setaccNo(userData.accNo);
+    setifscCode(userData.ifscCode);
+    setaccHolderName(userData.accHolderName);
   }, []);
 
   const title = "Check this out!";
@@ -144,106 +165,163 @@ const UserProfile = () => {
                 data-bs-toggle="modal"
                 data-bs-target="#edirUsers"
               >
-                <i className="fa fa-edit"></i>
+                <i className="fa fa-edit"></i> Edit Profile
               </button>
             </div>
             <div className="card-body p-3 table-responsive">
               <div className="row">
                 <div className="col-lg-5 col-12">
-                  <p>
-                    <b>Reference By :</b> {userData.referBy}
+                  <p className="text-success fw-bold">
+                    <b className="text-dark">Sponsor Id :</b>{" "}
+                    {userData.sponsorId}
                   </p>
                   <p>
                     <b>Name :</b> {userData.name}
                   </p>
-                  <p>
-                    <b>Email :</b> {userData.email}
+                  <p className="text-success fw-bold">
+                    <b className="text-dark">Login Id :</b> {userData._id}
                   </p>
-                  <b>KYC Status :</b>{" "}
-                  {userData.kycstatus === undefined ||
-                  userData.kycstatus === "" ||
-                  userData.kycstatus === null ? (
-                    <>
-                      <span className="text-danger">Pending</span>
-                      <button
-                        className="btn btn-primary mt-3  ms-auto"
-                        data-bs-toggle="modal"
-                        data-bs-target="#kycModal"
-                      >
-                        KYC Now
-                      </button>
-                    </>
-                  ) : (
-                    userData.kycstatus
-                  )}
                 </div>
                 <div className="col-lg-5 col-12">
+                  <p className="text-success fw-bold">
+                    <b className="text-dark">Sponsor Name :</b>{" "}
+                    {userData.referBy}
+                  </p>
                   <p>
                     <b>Mobile :</b> {userData.mobile}
                   </p>
                   <p>
-                    <b>Address :</b> {userData.address}
-                  </p>
-                  <p>
-                    <b>PAN No. :</b>{" "}
-                    {userData.pan === undefined ||
-                    userData.pan === "" ||
-                    userData.pan === null
-                      ? ""
-                      : userData.kycstatus}
+                    <b>Email :</b> {userData.email}
                   </p>
                 </div>
                 <div className="col-lg-2 col-6 m-auto">
                   <Image
                     src={`${url}/uploads/${userData.profile_image}`}
                     alt=""
-                    width={150}
+                    width={"100%"}
                   />
                 </div>
-
+                <div className="col-lg-12 col-12">
+                  <p className="">
+                    <b>
+                      Address <small>(Full Address for Dispatch)</small> :
+                    </b>{" "}
+                    {userData.address}
+                  </p>
+                </div>
+              </div>
+              <div className="row mt-2">
+                <div className="col-lg-12 col-12">
+                  <h3>Bank Details</h3>
+                </div>
+                <div className="col-lg-4 col-12">
+                  <label>PAN No.</label>
+                  <input
+                    type="text"
+                    value={userData.pan}
+                    className="form-control"
+                    placeholder="PAN NO."
+                    onChange={(e) => setPAN(e.target.value)}
+                  />
+                </div>
+                <div className="col-lg-4 col-12">
+                  <label>Bank Name</label>
+                  <input
+                    type="text"
+                    value={userData.bankName}
+                    className="form-control"
+                    placeholder="Bank Name"
+                    onChange={(e) => setbankName(e.target.value)}
+                  />
+                </div>
+                <div className="col-lg-4 col-12">
+                  <label>Branch Name</label>
+                  <input
+                    type="text"
+                    value={userData.branchName}
+                    className="form-control"
+                    placeholder="Branch Name"
+                    onChange={(e) => setbranchName(e.target.value)}
+                  />
+                </div>
+                <div className="col-lg-4 col-12">
+                  <label>Account No.</label>
+                  <input
+                    type="text"
+                    value={userData.accNo}
+                    className="form-control"
+                    placeholder="Account Number"
+                    onChange={(e) => setaccNo(e.target.value)}
+                  />
+                </div>
+                <div className="col-lg-4 col-12">
+                  <label>IFSC Code</label>
+                  <input
+                    type="text"
+                    value={userData.ifscCode}
+                    className="form-control"
+                    placeholder="IFSC Code"
+                    onChange={(e) => setifscCode(e.target.value)}
+                  />
+                </div>
+                <div className="col-lg-4 col-12">
+                  <label>Acc Holder Name</label>
+                  <input
+                    type="text"
+                    value={userData.accHolderName}
+                    className="form-control"
+                    placeholder="Acc Holder Name"
+                    onChange={(e) => setaccHolderName(e.target.value)}
+                  />
+                </div>
+                <div className="col-lg-12 col-12 text-center">
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => updateBankDetails()}
+                  >
+                    Update
+                  </button>
+                </div>
+              </div>
+              <div className="row mt-4">
                 <div className="col-lg-8 col-12 mt-4">
-                  {userData.packageName === undefined ||
-                  userData.packageName === "" ? (
-                    ""
-                  ) : (
-                    <div className="row ">
-                      <div className="col-lg-12">
-                        <b>Refferal Link :</b>{" "}
-                        <a
-                          target="_blank"
-                          className="refferalLink"
-                          href={referLink}
-                        >
-                          {tempLink}
-                        </a>
-                      </div>
-                      <div className="col-lg-4 col-12 text-start">
-                        <h5 className="font-weight-bolder mb-0">
-                          Refer and Earn :{" "}
-                        </h5>
-                      </div>
-                      <div className="col-lg-6 col-12 d-flex justify-content-between align-items-center">
-                        <FacebookShareButton url={referLink} quote={title}>
-                          <FacebookIcon size={32} round />
-                        </FacebookShareButton>
-                        <WhatsappShareButton url={referLink} title={title}>
-                          <WhatsappIcon size={32} round />
-                        </WhatsappShareButton>
-                        <InstapaperShareButton url={referLink}>
-                          <InstapaperIcon size={32} round />
-                        </InstapaperShareButton>
-                        <TelegramShareButton url={referLink}>
-                          <TelegramIcon size={32} round />
-                        </TelegramShareButton>
-                        <LinkedinShareButton url={referLink}>
-                          <LinkedinIcon size={32} round />
-                        </LinkedinShareButton>
-                        <TwitterShareButton url={referLink} title={title}>
-                          <TwitterIcon size={32} round />
-                        </TwitterShareButton>
-                      </div>
+                  <div className="row ">
+                    <div className="col-lg-12">
+                      <b>Refferal Link :</b>{" "}
+                      <a
+                        target="_blank"
+                        className="refferalLink"
+                        href={referLink}
+                      >
+                        {tempLink}
+                      </a>
                     </div>
-                  )}
+                    <div className="col-lg-4 col-12 text-start">
+                      <h5 className="font-weight-bolder mb-0">
+                        Refer and Earn :{" "}
+                      </h5>
+                    </div>
+                    <div className="col-lg-6 col-12 d-flex justify-content-between align-items-center">
+                      <FacebookShareButton url={referLink} quote={title}>
+                        <FacebookIcon size={32} round />
+                      </FacebookShareButton>
+                      <WhatsappShareButton url={referLink} title={title}>
+                        <WhatsappIcon size={32} round />
+                      </WhatsappShareButton>
+                      <InstapaperShareButton url={referLink}>
+                        <InstapaperIcon size={32} round />
+                      </InstapaperShareButton>
+                      <TelegramShareButton url={referLink}>
+                        <TelegramIcon size={32} round />
+                      </TelegramShareButton>
+                      <LinkedinShareButton url={referLink}>
+                        <LinkedinIcon size={32} round />
+                      </LinkedinShareButton>
+                      <TwitterShareButton url={referLink} title={title}>
+                        <TwitterIcon size={32} round />
+                      </TwitterShareButton>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -270,6 +348,7 @@ const UserProfile = () => {
                     <div className="modal-body">
                       <div className="row">
                         <div className="col-lg-6">
+                          <label>Full Name</label>
                           <input
                             type="text"
                             className="form-control"
@@ -280,11 +359,12 @@ const UserProfile = () => {
                           />
                         </div>
                         <div className="col-lg-6">
+                          <label>Mobile Number</label>
                           <input
                             type="text"
                             className="form-control"
                             name="shopmobile"
-                            placeholder="Shop Mobile"
+                            placeholder="Mobile No."
                             defaultValue={userData.mobile && userData.mobile}
                             onChange={(e) => setMobile(e.target.value)}
                           />
@@ -292,20 +372,34 @@ const UserProfile = () => {
                       </div>
                       <div className="row mt-2">
                         <div className="col-lg-6">
+                          <label>Email</label>
                           <input
                             type="text"
                             className="form-control"
                             name="shopemail"
-                            placeholder="Shop Email"
+                            placeholder="Email"
                             defaultValue={userData.email && userData.email}
                             onChange={(e) => setEmail(e.target.value)}
                           />
                         </div>
+                        <div className="col-lg-6">
+                          <label>Profile Image</label>
+                          <input
+                            type="file"
+                            className="form-control"
+                            name="Image"
+                            placeholder="Image"
+                            onChange={(e) => setImage(e.target.files[0])}
+                          />
+                        </div>
                       </div>
                       <div className="row py-0">
-                        <div className="col-lg-6 col-6">
+                        <div className="col-lg-12 col-12">
                           <label>
                             Address<span className="text-danger">*</span>
+                            <small>
+                              (Full Address with Pincode for Dispatch)
+                            </small>
                           </label>
                           <input
                             type="text"
@@ -314,16 +408,6 @@ const UserProfile = () => {
                             placeholder="Address"
                             defaultValue={userData.address}
                             onChange={(e) => setAddress(e.target.value)}
-                          />
-                        </div>
-                        <div className="col-lg-4 col-8">
-                          <label>Profile Image</label>
-                          <input
-                            type="file"
-                            className="form-control"
-                            name="Image"
-                            placeholder="Image"
-                            onChange={(e) => setImage(e.target.files[0])}
                           />
                         </div>
                         <div className="col-lg-2 col-4">
@@ -355,78 +439,6 @@ const UserProfile = () => {
                       >
                         Submit
                       </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                class="modal fade"
-                id="kycModal"
-                tabindex="-1"
-                aria-labelledby="kycModalLabel"
-                aria-hidden="true"
-              >
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="kycModalLabel">
-                        KYC Form
-                      </h5>
-                      <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <div class="modal-body">
-                      {panVerifyStatus === false ? (
-                        <div className="row">
-                          <div className="col-lg-12 col-12">
-                            <label>
-                              PAN Number<span className="text-danger">*</span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              name="PAN"
-                              onChange={(e) => setPAN(e.target.value)}
-                              required
-                              placeholder="PAN"
-                            />
-                          </div>
-                          <div className="col-lg-12 col-12">
-                            <label>PAN Name</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              name="panName"
-                              placeholder="PAN Name"
-                              onChange={(e) => setPANName(e.target.value)}
-                              required
-                            />
-                          </div>
-                          <div className="col-lg-12 col-12 text-center mt-3">
-                            <button
-                              type="button"
-                              class="btn btn-secondary"
-                              data-bs-dismiss="modal"
-                            >
-                              Close
-                            </button>
-                            <button
-                              className="btn btn-primary ms-2"
-                              onClick={() => panVerify()}
-                              data-bs-dismiss="modal"
-                            >
-                              Verify
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        ""
-                      )}
                     </div>
                   </div>
                 </div>
