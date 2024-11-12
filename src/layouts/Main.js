@@ -205,6 +205,36 @@ const Main = () => {
                 <span className="nav-link-text ms-1">TopUp Request</span>
               </Link>
             </li>
+            <li className="nav-item">
+              <Link
+                className={
+                  urls === "/admin/petrol-card-details"
+                    ? "nav-link text-white active"
+                    : "nav-link text-white"
+                }
+                to="/admin/petrol-card-details"
+              >
+                <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  <i className="fa fa-wallet"></i>
+                </div>
+                <span className="nav-link-text ms-1">Petrol Card Details</span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                className={
+                  urls === "/admin/prepaid-card-details"
+                    ? "nav-link text-white active"
+                    : "nav-link text-white"
+                }
+                to="/admin/prepaid-card-details"
+              >
+                <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  <i className="fa fa-wallet"></i>
+                </div>
+                <span className="nav-link-text ms-1">Prepaid Card Details</span>
+              </Link>
+            </li>
             {/* <li className="nav-item">
               <Link
                 className={
@@ -225,7 +255,7 @@ const Main = () => {
       </aside>
       <main className="main-content border-radius-lg">
         <nav
-          className="navbar navbar-main navbar-expand-lg px-0 mx-lg-2 mx-0 py-3 mt-lg-1 mt-0 bg-dark shadow-none"
+          className="navbar navbar-main navbar-expand-lg px-0 mx-lg-2 mx-0 py-3 mt-lg-1 mt-0 bg-gradient-dark shadow-none"
           id="navbarBlur"
           data-scroll="true"
         >

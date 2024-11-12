@@ -31,7 +31,10 @@ const DirectsIncomeReports = () => {
     if (data.status === 200) {
       let allDirect = [];
       data.result.map((item) => {
-        if (item.reason === "Refer & Earn Level 1") {
+        if (
+          item.reason === "Refer & Earn Level 1" &&
+          item.amountStatus === "Done"
+        ) {
           allDirect.push(item);
         }
       });
@@ -50,7 +53,7 @@ const DirectsIncomeReports = () => {
   const getTotal = () => {
     let total = 0;
     users.map((item) => {
-      if (item.type === "Credit") {
+      if (item.type === "Credit" && item.amountStatus === "Done") {
         total += parseInt(item.amount);
       }
     });
@@ -69,7 +72,7 @@ const DirectsIncomeReports = () => {
           const amount = user.amount || 0; // Handle potential undefined or null values
           if (user.type === "Credit") {
             totalAmount += amount; // Add to total credit if type is "Credit"
-          } 
+          }
           return {
             srNo: index + 1, // Serial Number
             ...user, // Spread the existing user data

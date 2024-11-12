@@ -35,6 +35,10 @@ import MyDirects from "./userComponents/MyDirects";
 import ChangePassword from "./userComponents/ChangePassword";
 import MyIndirects from "./userComponents/MyIndirects";
 import PetrolCardWallet from "./userComponents/PetrolCardWallet";
+import PrepaidCard from "./userComponents/PrepaidCard";
+import PrepaidCardDetails from "./components/PrepaidCardDetails";
+import PetrolCardDetails from "./components/PetrolCardDetails";
+import MyTeamLevel from "./userComponents/MyTeamLevel";
 
 const App = () => {
   return (
@@ -55,7 +59,6 @@ const App = () => {
           <Route index Component={Dashboard} />
           <Route path="all-users" Component={AllUsers} />
           <Route path="admin-wallet" Component={AdminWallet} />
-
           <Route
             path="reward-point-calculator"
             Component={RewardPointCalculator}
@@ -73,6 +76,8 @@ const App = () => {
             path="package-purchase-request"
             Component={PackagePurchaseRequest}
           />
+          <Route path="petrol-card-details" Component={PetrolCardDetails} />
+          <Route path="prepaid-card-details" Component={PrepaidCardDetails} />
         </Route>
         <Route path="/users" Component={UserLayout}>
           <Route index Component={UserDashboard} />
@@ -81,6 +86,7 @@ const App = () => {
           <Route path="all-refer-to-users" Component={RefferalTree} />
           <Route path="gift-cashback-wallet" Component={GiftCashbackWallet} />
           <Route path="petrol-card-wallet" Component={PetrolCardWallet} />
+          <Route path="prepaid-card-wallet" Component={PrepaidCard} />
           <Route path="awards-and-rewards" Component={ComingSoon} />
           <Route path="my-directs" Component={MyDirects} />
           <Route path="my-indirects" Component={MyIndirects} />
@@ -92,6 +98,7 @@ const App = () => {
           <Route path="level-bonus" Component={TotalIncome} />
           <Route path="reports" Component={Reports} />
           <Route path="change-password" Component={ChangePassword} />
+          <Route path="my-team-level" Component={MyTeamLevel} />
         </Route>
       </Routes>
     </BrowserRouter>

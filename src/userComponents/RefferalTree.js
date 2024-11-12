@@ -24,6 +24,8 @@ const RefferalTree = () => {
       },
     });
     const result = await response.json();
+    console.log(result);
+    
     setConnectedUsers(result.status === 200 ? result.result : []);
   };
 

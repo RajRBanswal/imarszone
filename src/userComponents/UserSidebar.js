@@ -106,7 +106,7 @@ const UserSidebar = ({ sidebarOn }) => {
               <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
                 <i className="material-icons opacity-10">person</i>
               </div>
-              <span className="nav-link-text ms-1">Profile</span>
+              <span className="nav-link-text ms-1">My Profile</span>
             </Link>
           </li>
 
@@ -159,6 +159,18 @@ const UserSidebar = ({ sidebarOn }) => {
                   to="/users/petrol-card-wallet"
                 >
                   <i className="fa fa-wallet mr-1"></i>Petrol Card Wallet
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className={
+                    urls === "/users/prepaid-card-wallet"
+                      ? "dropdown-item ms-1 nav-link text-white active"
+                      : "dropdown-item ms-1 nav-link text-white"
+                  }
+                  to="/users/prepaid-card-wallet"
+                >
+                  <i className="fa fa-wallet mr-1"></i>Prepaid Card Wallet
                 </Link>
               </li>
             </ul>

@@ -31,7 +31,13 @@ const AwardIncome = () => {
     const data = await response.json();
 
     if (data.status === 200) {
-      setUsers(data.result);
+      let abc = [];
+      data.result.map((item) => {
+        if (item.amountStatus === "Done") {
+          abc.push(item);
+        }
+      });
+      setUsers(abc);
     } else {
       setUsers([]);
     }

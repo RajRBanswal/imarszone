@@ -5,7 +5,7 @@ import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Link } from "react-router-dom";
 
-const PetrolCardWallet = () => {
+const PrepaidCard = () => {
   let userId = "";
   const navigate = useNavigate();
   userId = localStorage.getItem("userId");
@@ -14,7 +14,7 @@ const PetrolCardWallet = () => {
   const [showTransaction, setShowTransaction] = useState(false);
 
   const getWalletData = async () => {
-    const response = await fetch(`${url}/api/users/user-petrol-card-wallet`, {
+    const response = await fetch(`${url}/api/users/user-prepaid-card-wallet`, {
       method: "post",
       body: JSON.stringify({ userId }),
       headers: {
@@ -55,7 +55,7 @@ const PetrolCardWallet = () => {
       <div className="iphone">
         <div className="header">
           <div className="header-summary w-50 ps-lg-5 ps-2">
-            <div className="summary-text mb-0">Petrol Card Balance</div>
+            <div className="summary-text mb-0">Prepaid Card Balance</div>
             <div className="summary-balance">
               <i className="fa fa-rupee"></i> {getTotal()}.00
             </div>
@@ -160,4 +160,4 @@ const PetrolCardWallet = () => {
     </div>
   );
 };
-export default PetrolCardWallet;
+export default PrepaidCard;

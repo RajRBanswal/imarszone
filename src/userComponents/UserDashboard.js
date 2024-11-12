@@ -17,6 +17,7 @@ import {
 } from "react-share";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
+import { Link } from "react-router-dom";
 
 const UserDashboard = () => {
   const userId = localStorage.getItem("userId");
@@ -67,6 +68,8 @@ const UserDashboard = () => {
     });
     const result = await response.json();
     if (result.status === 200) {
+      console.log(result.result);
+
       setUsers(result.result);
     } else {
       setUsers(result.result);
@@ -94,8 +97,20 @@ const UserDashboard = () => {
     setReferLink(referUrl);
   };
 
+  const [allUsers, setAllUsers] = useState("");
   useEffect(() => {
     referAndEarn(userId);
+
+    const getUsers = async () => {
+      const response = await fetch(`${url}/api/admin/all-users`);
+      const result = await response.json();
+      if (result.status === 200) {
+        setAllUsers(result.result);
+      } else {
+        setAllUsers(result.result);
+      }
+    };
+    getUsers();
   }, []);
 
   const title = "Check this out!";
@@ -109,8 +124,12 @@ const UserDashboard = () => {
       let packageId = "";
       if (selectedPackage === "Paithani Sarees + Prepaid Card") {
         packageId = 101;
-      } else {
+      } else if (
+        selectedPackage === "Petrol Card + 500 Load + Gift Card (50/Referral)"
+      ) {
         packageId = 102;
+      } else {
+        packageId = 103;
       }
       let amount = 999;
       const formData = new FormData();
@@ -154,10 +173,58 @@ const UserDashboard = () => {
   const getTotal = () => {
     let total = 0;
     walletData.map((item) => {
-      if (item.type === "Credit") {
+      if (item.type === "Credit" && item.amountStatus === "Done") {
         total += item.amount;
-      } else if (item.type === "Debit") {
+      } else if (item.type === "Debit" && item.amountStatus === "Done") {
         total -= item.amount;
+      }
+    });
+    return total;
+  };
+
+  const getTotalIncome = () => {
+    let total = 0;
+    walletData.forEach((item) => {
+      if (
+        item.type === "Credit" &&
+        item.amountStatus === "Done" &&
+        item.reason.includes("Refer") // Corrected method name
+      ) {
+        total += item.amount;
+      } else if (
+        item.type === "Credit" &&
+        item.amountStatus === "Pending" &&
+        item.reason.includes("Refer") // Corrected method name
+      ) {
+        total += item.amount;
+      }
+    });
+    return total;
+  };
+
+  const getActive = () => {
+    let total = 0;
+    walletData.map((item) => {
+      if (
+        item.type === "Credit" &&
+        item.amountStatus === "Done" &&
+        item.reason.includes("Refer")
+      ) {
+        total += item.amount;
+      }
+    });
+    return total;
+  };
+
+  const getInactive = () => {
+    let total = 0;
+    walletData.map((item) => {
+      if (
+        item.type === "Credit" &&
+        item.amountStatus === "Pending" &&
+        item.reason.includes("Refer")
+      ) {
+        total += item.amount;
       }
     });
     return total;
@@ -215,7 +282,7 @@ const UserDashboard = () => {
         </div>
       </div>
       <div className="row mt-1">
-        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-4">
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-3">
           <div className="card my-3 border-2" style={{ background: "#fff" }}>
             <div className="card-header p-3 pt-2">
               <div className="icon icon-lg icon-shape bg-success border-1 shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
@@ -235,8 +302,8 @@ const UserDashboard = () => {
             </div>
           </div>
         </div>
-        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-4">
-          <div className="card my-3" style={{ backgroundColor: "#f301ff" }}>
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-3">
+          <div className="card my-3" style={{ backgroundColor: "#500054" }}>
             <div className="card-header p-3 pt-2">
               <div className="icon icon-lg icon-shape bg-white border-1 shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
                 <i className="">
@@ -274,24 +341,68 @@ const UserDashboard = () => {
             </div>
           </div>
         </div>
-        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-4">
-          <div className="card my-3 bg-primary">
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-3">
+          <div className="card my-3 bg-danger">
             <div className="card-header p-3 pt-2">
               <div className="icon icon-lg icon-shape bg-gradient-primary shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
                 <i className="material-icons opacity-10">person_add</i>
               </div>
               <div className="text-end pt-1">
+                <h5 className=" mb-0 text-white">Total Team (Company)</h5>
+              </div>
+              <h4 className="mb-0 text-white text-end">{allUsers.length}</h4>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-3">
+          <div className="card my-3 bg-primary">
+            <div className="card-header p-3 pt-2">
+              <div className="icon icon-lg icon-shape bg-gradient-primary shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
+                <i className="fa fa-rupee"></i>
+              </div>
+              <div className="text-end pt-1">
                 <h5 className=" mb-0 text-white">My Total Income</h5>
               </div>
               <h4 className="mb-0 text-white text-end">
-                <i className="fa fa-rupee"></i> {getTotal()}
+                <i className="fa fa-rupee"></i> {getTotalIncome()}
+              </h4>
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-3">
+          <div className="card my-3 bg-warning">
+            <div className="card-header p-3 pt-2">
+              <div className="icon icon-lg icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-xl mt-n4 position-absolute">
+                <i className="fa fa-rupee"></i>
+              </div>
+              <div className="text-end pt-1">
+                <h5 className="mb-0 text-white">My Active Income</h5>
+              </div>
+              <h4 className="mb-0 text-white text-end">
+                <i className="fa fa-rupee"></i> {getActive()}
+              </h4>
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-3">
+          <div className="card my-3 bg-success">
+            <div className="card-header p-3 pt-2">
+              <div className="icon icon-lg icon-shape bg-gradient-secondary shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
+                <i className="fa fa-rupee"></i>
+              </div>
+              <div className="text-end pt-1">
+                <h5 className=" mb-0 text-white">My Inactive Income</h5>
+              </div>
+              <h4 className="mb-0 text-white text-end">
+                <i className="fa fa-rupee"></i> {getInactive()}
               </h4>
             </div>
           </div>
         </div>
 
-        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-4">
-          <div className="card my-3 bg-primary">
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-3">
+          <div className="card my-3 bg-danger">
             <div className="card-header p-3 pt-2">
               <div className="icon icon-lg icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-xl mt-n4 position-absolute">
                 <i className="fa fa-users"></i>
@@ -301,12 +412,21 @@ const UserDashboard = () => {
                   My Total Team
                 </h5>
               </div>
-              <p className="mb-0 text-white fw-bold text-end">{users.length}</p>
+              <h5 className="mb-0 text-white fw-bold text-end">
+                {users.length}{" "}
+                <Link
+                  to="/users/my-team-level"
+                  className="text-white ms-4"
+                  style={{ fontSize: 14 }}
+                >
+                  Click Here...
+                </Link>
+              </h5>
             </div>
           </div>
         </div>
-        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-4">
-          <div className="card my-3 bg-success">
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-3">
+          <div className="card my-3 bg-secondary">
             <div className="card-header p-3 pt-2">
               <div className="icon icon-lg icon-shape bg-gradient-primary shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
                 <i className="material-icons opacity-10">person_add</i>
@@ -318,8 +438,8 @@ const UserDashboard = () => {
             </div>
           </div>
         </div>
-        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-4">
-          <div className="card my-3 bg-danger">
+        <div className="col-lg-4 col-sm-6 mt-lg-0 mt-3">
+          <div className="card my-3 bg-primary">
             <div className="card-header p-3 pt-2">
               <div className="icon icon-lg icon-shape bg-gradient-primary shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
                 <i className="material-icons opacity-10">person_add</i>
@@ -390,6 +510,31 @@ const UserDashboard = () => {
                         "Petrol Card + 500 Load + Gift Card (50/Referral)"
                       )
                     }
+                  >
+                    Buy Now
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-4 col-12">
+              <div className="card h-100">
+                <div className="card-body p-0">
+                  <img
+                    src={"./assets/img/web.jpg"}
+                    width={"100%"}
+                    height={"100%"}
+                  />
+                </div>
+                <div className="card-footer text-center h-100">
+                  <h5 className="text-primary">
+                    Sanitary Napkin + Petrol Card
+                  </h5>
+                  <h5 className="text-success">
+                    <i className="fa fa-rupee "></i> 999
+                  </h5>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => openNew("Sanitary Napkin + Petrol Card")}
                   >
                     Buy Now
                   </button>

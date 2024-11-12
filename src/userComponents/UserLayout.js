@@ -59,9 +59,9 @@ const UserLayout = () => {
   const getTotal = () => {
     let total = 0;
     walletData.map((item) => {
-      if (item.type === "Credit") {
+      if (item.type === "Credit" && item.amountStatus === "Done") {
         total += item.amount;
-      } else if (item.type === "Debit") {
+      } else if (item.type === "Debit" && item.amountStatus === "Done") {
         total -= item.amount;
       }
     });
@@ -80,7 +80,7 @@ const UserLayout = () => {
       <UserSidebar sidebarOn={sidebarOn} />
       <main className="main-content border-radius-lg">
         <nav
-          className="navbar navbar-main navbar-expand-lg px-0 mx-lg-2 mx-0 py-3 mt-lg-1 mt-0 bg-dark shadow-none"
+          className="navbar navbar-main navbar-expand-lg px-0 mx-lg-2 mx-0 py-3 mt-lg-1 mt-0 bg-gradient-dark shadow-none"
           id="navbarBlur"
           data-scroll="true"
         >
@@ -156,7 +156,7 @@ const UserLayout = () => {
                   className="dropdown-menu dropdown-menu-end shadow px-2 py-3 me-sm-n4"
                   aria-labelledby="dropdownMenuButton"
                 >
-                  <li className="mb-2">
+                  {/* <li className="mb-2">
                     <Link
                       className="dropdown-item border-radius-md"
                       to="/users/user-profile"
@@ -166,7 +166,7 @@ const UserLayout = () => {
                         User Profile
                       </p>
                     </Link>
-                  </li>
+                  </li> */}
                   <li className="mb-2">
                     <Link
                       className="dropdown-item border-radius-md"

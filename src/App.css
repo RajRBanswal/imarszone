@@ -1565,3 +1565,8 @@ li .tree-node:nth-child(1)::before {
   background-color: #f9c61f;
   padding: 10px;
 }
+.important {
+  margin-top: 20px;
+  color: #ff0000;
+  font-weight: bold;
+}

@@ -210,6 +210,15 @@ const Home = () => {
           <div class="pricing-table py-5">
             <div class="pricing-plan">
               <div class="plan-features">
+                <img src={"./assets/img/saaree.jpg"} width={"100%"} />
+              </div>
+              <div class="plan-header">
+                <h2 class="plan-title">Paithani Saree</h2>
+                <p className="fw-bold">(10 Directs)</p>
+              </div>
+            </div>
+            <div class="pricing-plan">
+              <div class="plan-features">
                 <img src={"./assets/img/prepaid.jpg"} width={"100%"} />
               </div>
               <div class="plan-header">
@@ -226,6 +235,8 @@ const Home = () => {
                 <p className="fw-bold">(100 Directs)</p>
               </div>
             </div>
+          </div>
+          <div class="pricing-table py-5 justify-content-center">
             <div class="pricing-plan">
               <div class="plan-features">
                 <img src={"./assets/img/oneplus.png"} width={"100%"} />
@@ -235,8 +246,6 @@ const Home = () => {
                 <p className="fw-bold">(1000 Directs)</p>
               </div>
             </div>
-          </div>
-          <div class="pricing-table py-5 justify-content-center">
             <div class="pricing-plan">
               <div class="plan-features">
                 <img src={"./assets/img/laptop.webp"} width={"100%"} />
@@ -350,7 +359,12 @@ const Home = () => {
                   <div class="form-group">
                     <label>Message</label>
                     <div class="input-group mb-2 mb-sm-0">
-                      <input type="text" class="form-control" name="mesg" placeholder="Write Message" />
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="mesg"
+                        placeholder="Write Message"
+                      />
                     </div>
                   </div>
                   <div class="text-center mt-4">

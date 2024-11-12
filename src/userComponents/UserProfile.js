@@ -16,6 +16,8 @@ import {
   WhatsappIcon,
   WhatsappShareButton,
 } from "react-share";
+import Select from "react-select";
+const State = require("../apiHelper/state_dist_taluka.json");
 
 const UserProfile = () => {
   const userId = localStorage.getItem("userId");
@@ -34,6 +36,10 @@ const UserProfile = () => {
   const [accNo, setaccNo] = useState("");
   const [ifscCode, setifscCode] = useState("");
   const [accHolderName, setaccHolderName] = useState("");
+  const [taluka, setTaluka] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [pincode, setPincode] = useState("");
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const getUserProfile = async () => {
@@ -53,6 +59,56 @@ const UserProfile = () => {
     }
   };
 
+  const [allDistricts, setAllDistricts] = useState([]);
+  // Extract unique states
+  const uniqueStates = [...new Set(State.map((item) => item.State))];
+
+  // Map for your desired structure
+  const stateData = uniqueStates.map((state) => ({
+    value: state,
+    label: state,
+  }));
+
+  const GetState = (row) => {
+    setState(row.value);
+
+    // Get unique districts for the selected state
+    const uniqueDistrict = [
+      ...new Set(
+        State.map((item) => {
+          if (item.State === row.value) {
+            return item.District;
+          }
+          return null; // Return null for unmatched items
+        }).filter(Boolean) // Filter out null values
+      ),
+    ];
+
+    // Format districts for use in cityData
+    const formattedDistricts = uniqueDistrict.map((district) => ({
+      value: district,
+      label: district,
+    }));
+
+    setAllDistricts(formattedDistricts); // Uncomment to set the formatted districts
+  };
+
+  const [talukaList, setTalukaList] = useState([]); // State for search input
+  const getCity = (row) => {
+    setCity(row.value);
+    const allTaluka = [];
+
+    State.forEach((item) => {
+      if (item.District === row.value && item.State === state) {
+        allTaluka.push({
+          value: item.Taluka,
+          label: item.Taluka,
+        });
+      }
+    });
+    setTalukaList(allTaluka);
+  };
+
   //   console.log(userData);
 
   useEffect(() => {
@@ -67,6 +123,10 @@ const UserProfile = () => {
     formData.append("mobile", mobile ? mobile : "");
     formData.append("email", email ? email : "");
     formData.append("address", address ? address : "");
+    formData.append("taluka", taluka ? taluka : "");
+    formData.append("city", city ? city : "");
+    formData.append("state", state ? state : "");
+    formData.append("pincode", pincode ? pincode : "");
     formData.append("profile_image", image ? image : "");
 
     let response = await fetch(`${url}/api/users/update-users`, {
@@ -206,7 +266,14 @@ const UserProfile = () => {
                     <b>
                       Address <small>(Full Address for Dispatch)</small> :
                     </b>{" "}
-                    {userData.address}
+                    {!userData.state || !userData.taluka || !userData.city ? (
+                      <p>{userData.address}</p>
+                    ) : (
+                      <p>
+                        {userData.address}, {userData.taluka}, {userData.city},{" "}
+                        {userData.state}. {userData.pincode}
+                      </p>
+                    )}
                   </p>
                 </div>
               </div>
@@ -367,6 +434,7 @@ const UserProfile = () => {
                             placeholder="Mobile No."
                             defaultValue={userData.mobile && userData.mobile}
                             onChange={(e) => setMobile(e.target.value)}
+                            readOnly
                           />
                         </div>
                       </div>
@@ -393,7 +461,57 @@ const UserProfile = () => {
                           />
                         </div>
                       </div>
-                      <div className="row py-0">
+                      <div className="row mt-1">
+                        <div className="col-lg-4 col-12 col-md-4">
+                          <label className="form-label">State</label>
+                          <Select
+                            defaultValue={userData.state}
+                            onChange={GetState}
+                            options={stateData}
+                          />
+                        </div>
+                        <div className="col-lg-4 col-12 col-md-4">
+                          <label className="form-label">District</label>
+                          <Select
+                            defaultValue={userData.city}
+                            onChange={getCity}
+                            options={allDistricts}
+                          />
+                        </div>
+                        <div className="col-lg-4 col-12 col-md-4">
+                          <label className="form-label">Taluka</label>
+                          <Select
+                            defaultValue={userData.taluka}
+                            onChange={(value) => setTaluka(value.value)}
+                            options={talukaList}
+                          />
+                        </div>
+                      </div>
+                      <div className="row mt-1">
+                        <div className="col-lg-4 col-12 col-md-4">
+                          <label className="form-label">Village/Town</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Enter Address"
+                            defaultValue={userData.address}
+                            onChange={(e) => setAddress(e.target.value)}
+                          />
+                        </div>
+                        <div className="col-lg-4 col-12 col-md-4">
+                          <label className="form-label">
+                            Pincode<span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Enter Pincode"
+                            defaultValue={userData.pincode}
+                            onChange={(e) => setPincode(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      {/* <div className="row py-0">
                         <div className="col-lg-12 col-12">
                           <label>
                             Address<span className="text-danger">*</span>
@@ -419,7 +537,7 @@ const UserProfile = () => {
                             width={"100%"}
                           />
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                     <div className="modal-footer py-1">
                       <button

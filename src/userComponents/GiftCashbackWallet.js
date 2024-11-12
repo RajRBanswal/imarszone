@@ -40,9 +40,9 @@ const GiftCashbackWallet = () => {
   const getTotal = () => {
     let total = 0;
     walletData.map((item) => {
-      if (item.type === "Credit") {
+      if (item.type === "Credit" && item.amountStatus === "Done") {
         total += parseInt(item.amount);
-      } else if (item.type === "Debit") {
+      } else if (item.type === "Debit" && item.amountStatus === "Done") {
         total -= parseInt(item.amount);
       }
     });

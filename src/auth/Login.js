@@ -74,10 +74,25 @@ const Login = () => {
                         placeholder="Password"
                       />
                     </div>
+                    <div className="text-right mt-3 footerText">
+                      <p className="fw-bold">
+                        <Link
+                          className=""
+                          to="#"
+                          onClick={() =>
+                            alert(
+                              "If you forget your password, please contact the administrator for assistance."
+                            )
+                          }
+                        >
+                          Forget Password?
+                        </Link>
+                      </p>
+                    </div>
                     <div className="text-center">
                       <button
                         type="button"
-                        className="btn bg-gradient-primary w-50 my-4 mb-2"
+                        className="btn bg-gradient-primary w-50 my-2 mb-2"
                         onClick={() => getLogin()}
                       >
                         Sign in

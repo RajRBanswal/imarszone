@@ -33,7 +33,7 @@ const TotalIncome = () => {
     if (data.status === 200) {
       let allIncome = [];
       data.result.map((item) => {
-        if (item.type === "Credit") {
+        if (item.type === "Credit" && item.amountStatus === "Done") {
           allIncome.push(item);
         }
       });
@@ -52,7 +52,7 @@ const TotalIncome = () => {
   const getTotal = () => {
     let total = 0;
     users.map((item) => {
-      if (item.type === "Credit") {
+      if (item.type === "Credit" && item.amountStatus === "Done") {
         total += parseInt(item.amount);
       }
     });

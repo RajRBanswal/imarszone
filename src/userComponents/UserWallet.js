@@ -31,6 +31,7 @@ const UserWallet = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [recieverType, setRecieverType] = useState("Admin");
+  const [packages, setPackages] = useState("Paithani Sarees + Petrol Card");
 
   const getWalletData = async () => {
     const response = await fetch(`${url}/api/users/users-wallet`, {
@@ -51,9 +52,9 @@ const UserWallet = () => {
   const getTotal = () => {
     let total = 0;
     walletData.map((item) => {
-      if (item.type === "Credit") {
+      if (item.type === "Credit" && item.amountStatus === "Done") {
         total += parseInt(item.amount);
-      } else if (item.type === "Debit") {
+      } else if (item.type === "Debit" && item.amountStatus === "Done") {
         total -= parseInt(item.amount);
       }
     });
@@ -162,7 +163,7 @@ const UserWallet = () => {
     setAllWithdrawRequestDialog(false);
     setTopUpDialog(false);
     setAllTopupRequestDialog(false);
-    setFundTransfer(false)
+    setFundTransfer(false);
   };
 
   const getWithdrawRequest = async (value) => {
@@ -247,7 +248,11 @@ const UserWallet = () => {
     } else {
       const formData = new FormData();
       formData.append("userId", userId);
-      formData.append("amount", amount);
+      formData.append(
+        "amount",
+        packages === null || packages === "" ? amount : 999
+      );
+      formData.append("packages", packages);
       formData.append("walletAmount", getTotal());
       formData.append("screenshot", screenshot);
 
@@ -397,7 +402,7 @@ const UserWallet = () => {
                     className="icon-item btn btn-outline-danger"
                     onClick={() => openDialog()}
                     disabled={
-                      getTotal() > 100 && lastRequest !== true ? false : true
+                      getTotal() > 299 && lastRequest !== true ? false : true
                     }
                   >
                     <div className="icon">
@@ -625,12 +630,33 @@ const UserWallet = () => {
                 />
               </div>
               <div className="col-lg-12 mt-3">
+                <label>Select Package</label>
+                <select
+                  className="form-select"
+                  onChange={(e) => setPackages(e.target.value)}
+                >
+                  <option value={""}>Select One</option>
+                  <option value={"Paithani Sarees + Petrol Card"}>
+                    Paithani Sarees + Petrol Card
+                  </option>
+                  <option
+                    value={"Petrol Card + 500 Load + Gift Card (50/Referral)"}
+                  >
+                    Petrol Card + 500 Load + Gift Card (50/Referral)
+                  </option>
+                  <option value={"Sanitary Napkin + Petrol Card"}>
+                    Sanitary Napkin + Petrol Card
+                  </option>
+                </select>
+              </div>
+              <div className="col-lg-12 mt-3">
                 <label>
                   Amount (<small className="text-danger">*</small>)
                 </label>
                 <input
                   ref={ref}
                   type="text"
+                  defaultValue={packages === null || packages === "" ? 0 : 999}
                   className="form-control"
                   placeholder="Enter Topup Amount"
                   onChange={(e) => setAmount(e.target.value)}
@@ -668,6 +694,7 @@ const UserWallet = () => {
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">Request Date</th>
+                    <th scope="col">Package</th>
                     <th scope="col">Amount</th>
                     <th scope="col">Screenshot</th>
                     <th scope="col">Status</th>
@@ -678,6 +705,7 @@ const UserWallet = () => {
                     <tr key={index}>
                       <td scope="row">{index + 1}</td>
                       <td>{item.transactionDate}</td>
+                      <td>{item.packageName}</td>
                       <td>{item.amount}</td>
                       <td>
                         <Link
@@ -740,6 +768,7 @@ const UserWallet = () => {
                       <option value={"Admin"}>Admin</option>
                       <option value={"User"}>User</option>
                       <option value={"PetrolCard"}>Petrol Card</option>
+                      <option value={"PrepaidCard"}>Prepaid Card</option>
                     </select>
                   </div>
                   <div className="col-lg-6">
